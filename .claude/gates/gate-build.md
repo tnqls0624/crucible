@@ -2,7 +2,6 @@
 
 > gate → ship 전환을 위한 통과 조건
 > 이 게이트는 build 단계 구현물이 준비된 뒤 gate 단계에서 실행하는 이중 구조입니다: Gate A (Validation) + Gate B (Testing)
-> 현재 프로젝트가 `documentation-first` 상태라면 이 게이트는 아직 실행 대상이 아닙니다.
 
 ## Gate A: Validation (빠름, 결정론적)
 

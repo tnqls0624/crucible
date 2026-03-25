@@ -1,6 +1,12 @@
 # Evidence Session Template
 
-`10-session evidence gate`는 구현 전에 실제 사용 세션을 기록해, 우리가 풀려는 문제가 진짜로 `재질의 루프`와 `계약 파손`인지 확인하기 위한 장치입니다.
+이 템플릿은 구현 전에 실제 사용 세션을 기록해, 우리가 풀려는 문제가 진짜인지 확인하기 위한 장치입니다.
+
+특히 아래 상황에서 유용합니다.
+
+- AI 코딩 워크플로우에서 재작업이 너무 많다고 느낄 때
+- 요청 범위가 자꾸 넓어져 결과가 흔들릴 때
+- 계약 파손, 품질 드리프트, 검증 누락을 실제 사례로 확인하고 싶을 때
 
 아래 템플릿을 세션당 1개씩 복사해서 사용합니다.
 
@@ -18,7 +24,7 @@
 
 사용자가 처음 던진 자연어 요청을 그대로 적습니다.
 
-## Expected Contract
+## Intended Constraints
 
 - 지켜야 하는 인터페이스 / API 계약:
 - 건드리면 안 되는 경로:
@@ -42,7 +48,7 @@
 
 - **Requery Count**:
 - **Total Minutes Lost**:
-- **Token Waste Estimate**:
+- **Token / Cost Impact**:
 - **Final Result Satisfaction**: low | medium | high
 
 ## Pain Classification
@@ -50,11 +56,11 @@
 - 문제 유형: 계약 파손 | 맥락 부족 | 범위 과다 | 검증 부재 | 기타
 - 가장 큰 손실: 시간 | 비용 | 집중력 | 신뢰도
 
-## Pack Direction Relevance
+## Workflow Relevance
 
-- 이 세션이 `Claude-first canonical pack` 방향을 강화했는가:
-- 어떤 policy/contract가 있었다면 재질의가 줄었을까:
-- 어떤 문서 규칙을 추가하거나 수정해야 하는가:
+- 어떤 workflow rule이나 guardrail이 있었으면 재작업이 줄었을까:
+- 어떤 spec / ADR / check가 있었다면 더 빨리 끝났을까:
+- 문서나 규칙에 어떤 변경이 필요해 보이는가:
 
 ## Decision
 

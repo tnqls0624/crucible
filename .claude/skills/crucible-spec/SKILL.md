@@ -11,7 +11,7 @@ description: |
   - Crucible 프로젝트에서 코드 작성 전 요구사항을 먼저 정리해야 할 때
   - 사용자가 어떤 기능을 만들고 싶다고 말했지만 아직 스펙이 없을 때
 
-  Example triggers: "Claude-first pack compiler v0 스펙을 정리하고 싶어", "결제 시스템 요구사항을 정리해야 돼", "이 기능 스펙을 작성해줘"
+  Example triggers: "JWT 로그인 기능 스펙을 정리하고 싶어", "결제 시스템 요구사항을 정리해야 돼", "이 기능 스펙을 작성해줘"
 ---
 
 # /crucible-spec — 피처 사양 작성
@@ -36,10 +36,10 @@ description: |
 
 **Example:**
 ```
-사용자: "Claude-first canonical pack을 Codex용으로 변환하는 v0를 정리하고 싶어"
-→ 핵심 목적: canonical source와 target semantics 정의
-→ 대상 사용자: 기존 코드베이스를 다루는 AI 코딩 에이전트 파워 유저
-→ 성공 기준: 확인 필요 → "이번 사이클은 문서 기준선까지만 잠글까요, 아니면 바로 구현 범위도 포함할까요?"
+사용자: "JWT 로그인 기능을 추가하고 싶어"
+→ 핵심 목적: 로그인 기능 추가
+→ 대상 사용자: 서비스 사용자
+→ 성공 기준: 확인 필요 → "로그인만 이번 사이클 범위인가요, 회원가입과 비밀번호 재설정도 포함인가요?"
 ```
 
 ### Step 2: 스펙 문서 생성
@@ -82,7 +82,7 @@ gate-spec 통과 + 사용자 승인 시:
 
 | 항목 | 값 |
 |------|-----|
-| Feature | Claude-First Pack Compiler v0 |
+| Feature | {feature name} |
 | ID | F001 |
 | Gate | PASS |
 

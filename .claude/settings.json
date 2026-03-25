@@ -48,9 +48,9 @@
     ]
   },
   "env": {
-    "CRUCIBLE_PHASE": "plan",
-    "CRUCIBLE_PROJECT_NAME": "Claude-First Pack Compiler",
-    "CRUCIBLE_PROJECT_TYPE": "ai-agent",
-    "CRUCIBLE_STACK": "Markdown-first canonical spec, Bash hooks/setup, GitHub release distribution (planned)"
+    "CRUCIBLE_PHASE": "spec",
+    "CRUCIBLE_PROJECT_NAME": "Crucible",
+    "CRUCIBLE_PROJECT_TYPE": "ai-agent workflow framework",
+    "CRUCIBLE_STACK": "Markdown workflow docs, Bash hooks/setup, optional Bun browser tool"
   }
 }

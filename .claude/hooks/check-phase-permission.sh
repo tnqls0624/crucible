@@ -80,7 +80,7 @@ case "$CURRENT_PHASE" in
            [[ "$FILE_PATH" == *".claude/agents/"* ]] || \
            [[ "$FILE_PATH" == *".claude/skills/"* ]]; then
             echo "FORGE PHASE GUARD: 현재 'build' 단계에서는 source-of-truth 운영 문서를 수정할 수 없습니다."
-            echo "문서 기준선 변경이 필요하면 CTO를 통해 plan 단계로 되돌린 뒤 조정하세요."
+            echo "운영 규칙 변경이 필요하면 CTO를 통해 plan 단계로 되돌린 뒤 조정하세요."
             exit 1
         fi
         ;;

@@ -87,7 +87,7 @@ Gate A 통과 후에만 실행:
 ## Crucible Gate Report
 
 **Date**: 2026-03-21
-**Feature**: Claude-First Pack Compiler v0 (F001)
+**Feature**: {feature name} ({feature ID})
 **Verdict**: PASS
 
 ### Gate A: Validation
@@ -109,7 +109,7 @@ Gate A 통과 후에만 실행:
 `/crucible-ship` 으로 릴리스를 진행하세요.
 ```
 
-> 현재 프로젝트가 문서 기준선 고도화 상태라면, 구현 코드와 테스트가 생기기 전까지 이 스킬은 실행하지 않습니다.
+> 구현 코드와 테스트 대상이 준비된 뒤에만 이 스킬을 실행합니다.
 
 ## Related Files
 

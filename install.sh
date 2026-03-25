@@ -8,8 +8,8 @@ WITH_BROWSER=0
 FORCE=0
 DRY_RUN=0
 
-GENERATOR_MARKER="generated-by: claude-first-pack-compiler v0"
-GENERATOR_SENTINEL=".generated-by-claude-first-pack-compiler"
+GENERATOR_MARKER="generated-by: crucible setup v0"
+GENERATOR_SENTINEL=".generated-by-crucible-setup"
 
 usage() {
   cat <<'EOF'
@@ -186,7 +186,7 @@ EOF
 다음 단계:
   1. Codex는 repo root의 `AGENTS.md`와 generated `.agents/`를 함께 읽습니다.
   2. 설치 후에는 `.agents/`를 직접 수정하지 말고 프로젝트 코드 작업에 바로 사용합니다.
-  3. 프레임워크 규칙을 바꾸고 싶을 때만 `.claude/`를 수정한 뒤 `./install.sh codex`를 다시 실행합니다.
+  3. 프레임워크 규칙을 바꾸고 싶을 때만 `.claude/`를 수정한 뒤 `./setup --host codex`를 다시 실행합니다.
 EOF
       ;;
   esac

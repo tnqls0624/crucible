@@ -12,7 +12,7 @@ description: |
   - crucible-spec이 완료되어 설계 단계로 넘어갈 때
   - 스펙 기반으로 태스크를 분해하고 구현 순서를 정해야 할 때
 
-  Example triggers: "pack compiler 스펙이 완성됐으니까 아키텍처를 설계하고 태스크로 나눠줘", "이 피처를 어떻게 구현할지 플랜을 세워줘"
+  Example triggers: "로그인 스펙이 완성됐으니까 아키텍처를 설계하고 태스크로 나눠줘", "이 피처를 어떻게 구현할지 플랜을 세워줘"
 ---
 
 # /crucible-plan — 아키텍처 설계 + 태스크 분해
@@ -91,7 +91,7 @@ Constrained Claude Dialect를 단일 canonical source로 사용한다.
 ### Step 6: Phase 전환 및 태스크 등록
 
 1. 사용자가 실제 구현 시작을 승인한 경우에만 `CLAUDE.md`와 `settings.json`의 Phase를 `build`로 업데이트
-2. 문서 기준선 고도화만 진행 중이면 `plan` 유지
+2. 사용자가 구현 시작을 보류하면 `plan` 유지
 3. TodoWrite로 태스크 리스트를 등록하여 진행 추적 시작
 
 ## Output Format
@@ -101,24 +101,24 @@ Constrained Claude Dialect를 단일 canonical source로 사용한다.
 
 | 항목 | 값 |
 |------|-----|
-| Feature | Claude-First Pack Compiler v0 (F001) |
-| ADR | 001-pack-compiler-v0-architecture.md |
+| Feature | {feature name} ({feature ID}) |
+| ADR | {adr filename} |
 | Tasks | 4개 |
 | Gate | PASS |
 
 ### Architecture Decision
-`Constrained Claude Dialect -> typed IR -> validate -> emit` 파이프라인 채택. 현재는 `.claude` 문서를 source of truth로 고정.
+핵심 아키텍처 결정과 태스크 분해 결과를 요약.
 
 ### Task Overview
 | # | Task | Complexity | Dependencies |
 |---|------|-----------|-------------|
-| 1 | single schema core 초안 | medium | - |
-| 2 | dialect / policy 규칙 정리 | medium | Task 1 |
-| 3 | Codex target semantics 정리 | medium | Task 2 |
-| 4 | evidence gate / distribution 메모 정리 | medium | Task 2, Task 3 |
+| 1 | 인증 API 설계 | medium | - |
+| 2 | 세션 저장 구현 | medium | Task 1 |
+| 3 | 로그인 UI 연결 | medium | Task 1, Task 2 |
+| 4 | 테스트 및 검증 | medium | Task 2, Task 3 |
 
 ### 다음 단계
-문서 기준선이 잠기면 `/crucible-build` 로 구현을 시작하세요.
+승인되면 `/crucible-build` 로 구현을 시작하세요.
 ```
 
 ## Related Files

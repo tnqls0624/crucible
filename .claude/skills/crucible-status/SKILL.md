@@ -43,10 +43,10 @@ description: |
 ### Project
 | 항목 | 값 |
 |------|-----|
-| Name | Claude-First Pack Compiler |
-| Type | ai-agent |
-| Stack | Markdown-first canonical spec + Bash hooks |
-| Phase | plan |
+| Name | {project name} |
+| Type | {project type} |
+| Stack | {project stack} |
+| Phase | {current phase} |
 
 ### Pipeline
   [spec] → [PLAN] → [build] → [gate] → [ship]
@@ -55,17 +55,17 @@ description: |
 ### Active Features
 | ID | Name | Phase | Spec |
 |----|------|-------|------|
-| F001 | Claude-First Pack Compiler v0 | plan | pack-compiler-v0.spec.md |
+| F001 | {feature name} | {feature phase} | {spec filename} |
 
 ### Recent Decisions
 | ADR | Title |
 |-----|-------|
-| 001 | Claude-First Pack Compiler v0 Architecture |
+| 001 | {latest ADR title} |
 
 ### Recent Sessions
 | Date | Summary |
 |------|---------|
-| 2026-03-26 | 구현 스캐폴드를 제거하고 `.claude` 문서 기준선을 재정렬 |
+| 2026-03-26 | 최근 세션 요약 예시 |
 
 ### Git Status
 (미커밋 변경사항 또는 "clean")

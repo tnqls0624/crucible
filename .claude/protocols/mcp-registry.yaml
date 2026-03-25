@@ -1,8 +1,7 @@
 # Crucible MCP Server Registry
 # 에이전트별 MCP 서버 접근 권한을 정의합니다.
 # 이 파일은 참조용이며, 실제 MCP 서버 설정은 Claude Code settings에서 관리합니다.
-# 현재 프로젝트는 documentation-first 상태이므로, 아래 MCP 서버는 "즉시 사용 중"이 아니라
-# 구현 또는 QA 단계에 들어갈 때 활성화할 후보 목록으로 읽습니다.
+# 아래 MCP 서버는 프로젝트 타입과 현재 phase에 맞춰 활성화할 수 있는 후보 목록입니다.
 
 servers:
   # --- Development Tools ---

@@ -13,4 +13,4 @@
 - `iteration-*`
 - `benchmark.json`
 
-현재 저장소에서는 문서 기준선이 source of truth이므로, 이 workspace도 최소 평가 정의만 유지합니다.
+현재 저장소에서는 이 workspace를 최소 평가 정의와 참조 자산 중심으로 유지합니다.

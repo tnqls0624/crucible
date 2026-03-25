@@ -29,7 +29,7 @@
 모든 generated file은 아래 marker를 포함해야 합니다.
 
 ```md
-<!-- generated-by: claude-first-pack-compiler v0 -->
+<!-- generated-by: crucible setup v0 -->
 ```
 
 frontmatter가 있는 문서는 호환성을 위해 marker를 frontmatter 바로 뒤에 둘 수 있습니다.
@@ -74,7 +74,7 @@ v0 acceptance는 최소한 아래를 만족해야 합니다.
 1. canonical pack 문서를 검증한다.
 2. Codex target path를 계산한다.
 3. 충돌 여부를 검사한다.
-4. `./install.sh codex` 같은 설치 경로에서 generator marker를 포함한 산출물을 생성한다.
+4. `./setup --host codex` 또는 `./install.sh codex` 경로에서 generator marker를 포함한 산출물을 생성한다.
 5. runtime acceptance 또는 conformance에서 결과를 검증한다.
 
 ## v0 Non-Goals

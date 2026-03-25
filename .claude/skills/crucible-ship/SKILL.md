@@ -99,7 +99,7 @@ description: |
 
 | 항목 | 값 |
 |------|-----|
-| Feature | Claude-First Pack Compiler v0 (F001) |
+| Feature | {feature name} ({feature ID}) |
 | Version | v0.1.0 |
 | Gate | PASS |
 | CHANGELOG | Updated |
@@ -109,7 +109,7 @@ description: |
 다음 피처 사이클을 시작하려면 `/crucible-spec`을 사용하세요.
 ```
 
-> 현재 프로젝트가 문서 기준선 고도화 단계에 머물러 있다면, ship은 실행하지 않습니다. 실제 구현과 gate 통과가 선행되어야 합니다.
+> 실제 구현과 gate 통과가 선행된 뒤에만 ship을 실행합니다.
 
 ## Related Files
 

@@ -1,81 +1,115 @@
-# Claude-First Pack Compiler
+# Crucible
 
-`Claude Code`용 `.claude` 문서를 canonical source of truth로 두고, 필요할 때 `Codex`용 `.agents` 산출물을 repo-local로 생성해 프로젝트 코드 작업에 바로 사용할 수 있게 하는 agentic workflow 프레임워크입니다.
+Crucible is a repo-local AI engineering workflow for `Claude Code` and `Codex`.
+It gives you a repeatable pipeline instead of a blank prompt:
 
-현재 저장소는 구현 코드보다 워크플로우 계약과 설치 흐름을 먼저 잠그는 `alpha` 단계입니다. 즉, "완성된 semantic parity compiler"라기보다, 다른 개발자가 clone 후 바로 설치하고 자신의 프로젝트 코드 작업에 적용할 수 있는 공개 기준선을 제공합니다.
+**spec → plan → build → gate → ship**
 
-## 현재 상태
+The goal is simple: use structured agent roles and phase gates to move real project code
+from idea to implementation, validation, and release with less drift and less rework.
 
-- source of truth: `.claude/**/*.md`
-- 현재 공개 범위: `Claude Code` 직접 사용, `Codex`용 `.agents/` 생성
-- 아직 범위 밖: `Gemini`, full semantic compiler, 자동 update-check
+## Who This Is For
 
-## 빠른 시작
+- 혼자 빠르게 제품을 만드는 개발자
+- 작은 팀에서 AI 코딩 워크플로우를 공통 규칙으로 맞추고 싶은 사람
+- Claude Code / Codex를 쓰지만 아직 항상 같은 품질로 작업이 굴러가지 않는 사람
 
-### 1. 저장소 클론
+## Quick Start
+
+1. 저장소를 clone 합니다.
+2. host에 맞게 setup을 실행합니다.
+3. `/crucible-status`로 현재 상태를 보고, 새 작업이면 `/crucible-spec`부터 시작합니다.
 
 ```bash
 git clone https://github.com/tnqls0624/crucible.git
 cd crucible
+
+./setup --host claude
+# 또는
+./setup --host codex
 ```
 
-### 2. Claude Code용 설치
+설치 후 일반 사용자는 `.claude` 문서를 직접 수정하지 않습니다.
+대부분의 경우 바로 프로젝트 코드 작업으로 들어갑니다.
 
-`.claude` 문서를 그대로 사용하는 경우:
+## Install
+
+### Claude Code
 
 ```bash
-./install.sh claude
+./setup --host claude
 ```
 
-이 명령은 hook 스크립트 실행 권한을 정리하고, 현재 저장소에서 `Claude Code` 기반 agentic workflow를 사용할 준비를 합니다.
+- `.claude/hooks/` 실행 권한을 정리합니다.
+- 현재 저장소에서 Crucible 워크플로우를 바로 사용할 수 있게 준비합니다.
 
-### 3. Codex용 설치
-
-`.claude` 문서를 바탕으로 repo-local `.agents/` 산출물을 생성하려면:
+### Codex
 
 ```bash
-./install.sh codex
+./setup --host codex
 ```
 
-생성 결과:
+- `.claude` source를 바탕으로 repo-local `.agents/` 산출물을 생성합니다.
+- Codex는 root `AGENTS.md`와 generated `.agents/`를 함께 읽습니다.
 
-- `.agents/*.md`
-- `.agents/skills/*/SKILL.md`
-- `.agents/skills/*/references/*.md`
+### Browser QA Tool
 
-`.agents/`는 generated artifact이므로 직접 수정하지 않고, 필요할 때 다시 생성해서 사용합니다.
-
-### 4. 브라우저 QA 도구까지 함께 설치
-
-`crucible-qa`용 브라우저 바이너리까지 준비하려면 `bun`이 필요합니다.
+브라우저 QA가 필요한 프로젝트라면:
 
 ```bash
-./install.sh claude --with-browser
+./setup --host claude --with-browser
+# 또는
+./setup --host codex --with-browser
 ```
 
-또는:
+이 흐름은 `.claude/tools/browser/` 아래에서 의존성을 설치하고
+`bin/crucible-browse`를 생성합니다.
 
-```bash
-./install.sh codex --with-browser
+### Legacy Command
+
+`install.sh`도 계속 사용할 수 있지만, 공개용 기본 진입점은 `./setup`입니다.
+
+## What Using Crucible Looks Like
+
+일반적인 흐름은 이렇습니다.
+
+```text
+/crucible-status
+  "지금 상태 보여줘"
+
+/crucible-spec
+  "JWT 로그인 기능을 추가하고 싶어"
+
+/crucible-plan
+  "방금 만든 스펙 기준으로 설계와 태스크를 나눠줘"
+
+/crucible-build
+  "플랜대로 구현해줘"
+
+/crucible-gate
+  "테스트와 품질 게이트를 실행해줘"
+
+/crucible-ship
+  "릴리스 준비해줘"
 ```
 
-이 명령은 `.claude/tools/browser/` 아래에서 의존성을 설치하고 `bin/crucible-browse`를 생성합니다.
+핵심은 사용자가 `.claude`를 만지는 것이 아니라,
+**프로젝트 코드 작업을 이 워크플로우 위에서 수행하는 것**입니다.
 
-## 설치 스크립트 옵션
+## Core Skills
 
-```bash
-./install.sh claude
-./install.sh codex
-./install.sh codex --with-browser
-./install.sh codex --force
-./install.sh codex --dry-run
-```
+| Skill | 역할 |
+|-------|------|
+| `/crucible-status` | 현재 phase, spec, ADR, git 상태를 보여줍니다. |
+| `/crucible-spec` | 기능 요청을 스펙 문서로 정리합니다. |
+| `/crucible-plan` | 스펙을 ADR과 구현 태스크로 분해합니다. |
+| `/crucible-build` | 태스크를 구현 루프로 실행합니다. |
+| `/crucible-gate` | 타입체크, 린트, 테스트, 스펙 준수를 검증합니다. |
+| `/crucible-qa` | 브라우저 기반 QA를 수행합니다. |
+| `/crucible-ship` | 릴리스와 배포 흐름을 정리합니다. |
+| `/crucible-init` | 새 프로젝트에 Crucible 구조를 잡을 때 사용합니다. |
 
-- `--with-browser`: QA용 브라우저 바이너리까지 생성
-- `--force`: 기존 generated `.agents/`를 덮어씀
-- `--dry-run`: 실제 변경 없이 수행 예정 작업만 출력
-
-## 저장소 구조
+## How The Repo Is Structured
 
 ```text
 .
@@ -89,83 +123,83 @@ cd crucible
 │   ├── skills/
 │   └── tools/
 ├── AGENTS.md
+├── CLAUDE.md
 ├── VERSION
+├── setup
 └── install.sh
 ```
 
-핵심 문서:
+### Important Conventions
 
-- `.claude/CLAUDE.md`: 현재 프로젝트 운영 계약
-- `.claude/protocols/constrained-claude-dialect.md`: canonical 문법
-- `.claude/protocols/codex-target-semantics.md`: Codex 산출물 의미
-- `.claude/protocols/cross-model-compat.md`: 런타임 호환 정책
+- `.claude/`는 framework source of truth 입니다.
+- `.agents/`는 `./setup --host codex` 실행 시 생성되는 generated artifact 입니다.
+- 일반 사용자는 `.agents/`를 직접 수정하지 않습니다.
+- framework maintainer가 아닌 경우 `.claude`를 수정할 일은 거의 없습니다.
 
-## 일반 사용자 사용 흐름
+## Maintainer Mode vs User Mode
 
-대부분의 사용자는 `.claude` 문서를 직접 수정하지 않습니다. 설치 후 이 프레임워크를 이용해 **자기 프로젝트 코드 작업**을 진행하면 됩니다.
+### User Mode
 
-기본 흐름:
+이 저장소를 설치한 뒤 자신의 프로젝트 코드 작업을 수행하는 모드입니다.
 
-1. `./install.sh claude` 또는 `./install.sh codex`를 실행합니다.
-2. Claude Code 또는 Codex에서 프로젝트 루트를 엽니다.
-3. `/crucible-status`로 현재 상태를 확인합니다.
-4. 새 기능은 `/crucible-spec` → `/crucible-plan` → `/crucible-build` 순서로 진행합니다.
-5. 구현 후 `/crucible-gate`로 검증하고 필요하면 `/crucible-ship`으로 마무리합니다.
+- `/crucible-*` 명령으로 작업
+- spec → plan → build → gate → ship 순서 준수
+- `.claude` 수정 대신 코드/테스트/문서 산출물 작업
 
-예시:
+### Maintainer Mode
 
-```text
-/crucible-spec
-  "JWT 로그인 기능을 추가하고 싶어"
+Crucible 자체를 개선하는 모드입니다.
 
-/crucible-plan
-  "방금 만든 스펙 기준으로 설계와 태스크를 나눠줘"
+- `.claude/skills/`, `.claude/gates/`, `.claude/protocols/` 수정
+- Codex 쪽 출력 반영이 필요하면 `./setup --host codex` 재실행
+- 공개 정책, workflow, agent 역할을 바꿀 때 사용
 
-/crucible-build
-  "플랜대로 구현해줘"
+## Current State
 
-/crucible-gate
-  "테스트와 품질 게이트를 실행해줘"
+- public alpha
+- fresh clone 기본 phase: `spec`
+- `Claude Code`와 `Codex` repo-local 사용 흐름 지원
+- browser QA는 optional
+- `Gemini`와 full semantic compiler는 아직 범위 밖
+
+`.claude/memory/specs/`와 `.claude/memory/decisions/`는 starter 기준으로 비워 두었습니다.
+fresh clone 후 첫 real project spec과 ADR은 사용자의 프로젝트 문맥에 맞게 채우는 것이 기본 흐름입니다.
+
+## Troubleshooting
+
+**Codex에서 skill이 안 보이면**
+
+```bash
+./setup --host codex
 ```
 
-## `.claude`를 직접 수정하는 경우
+**브라우저 QA 바이너리가 없으면**
 
-`.claude` 문서를 직접 수정하는 건 아래 같은 경우에 가깝습니다.
+```bash
+./setup --host claude --with-browser
+```
 
-- 프레임워크 자체를 개선할 때
-- agent / skill / gate 규칙을 바꿀 때
-- 조직 공통 워크플로우를 커스터마이징할 때
+**generated `.agents/`를 다시 만들고 싶으면**
 
-즉, **일반 사용자 작업 대상은 보통 프로젝트 코드**이고, `.claude`는 그 작업을 안내하는 프레임워크 레이어입니다.
+```bash
+./setup --host codex --force
+```
 
-## 공개 저장소 원칙
+**dry-run으로 확인만 하고 싶으면**
 
-- `.claude`가 source of truth입니다.
-- `.agents`는 설치 시 생성되며 git에 커밋하지 않습니다.
-- `.codex`, `settings.local.json`, session log 같은 로컬 상태는 커밋하지 않습니다.
-- 브라우저 바이너리와 `node_modules`도 설치 시 생성합니다.
+```bash
+./setup --host codex --dry-run
+```
 
-## 현재 한계
+## Docs
 
-- 아직 `clone -> install -> production-grade compiler` 수준은 아닙니다.
-- `Codex` 설치는 full compiler가 아니라 문서 기반 generated artifact 흐름입니다.
-- `Gemini` 지원은 문서 설계만 있고 구현은 포함되지 않습니다.
-- update-check, GitHub release artifact, signed provenance는 v0 설계 범위에만 있습니다.
+- [AGENTS.md](/Users/soobeen/Desktop/Project/worktree/AGENTS.md): Codex/agent용 운영 문서
+- [CLAUDE.md](/Users/soobeen/Desktop/Project/worktree/CLAUDE.md): Claude Code용 운영 문서
+- [.claude/CLAUDE.md](/Users/soobeen/Desktop/Project/worktree/.claude/CLAUDE.md): framework 내부 기준선
+- [.claude/memory/README.md](/Users/soobeen/Desktop/Project/worktree/.claude/memory/README.md): memory 디렉토리 운영 규칙
+- [.claude/protocols/constrained-claude-dialect.md](/Users/soobeen/Desktop/Project/worktree/.claude/protocols/constrained-claude-dialect.md): canonical 문법
+- [.claude/protocols/codex-target-semantics.md](/Users/soobeen/Desktop/Project/worktree/.claude/protocols/codex-target-semantics.md): Codex 산출물 규칙
 
-## 권장 사용 방식
+## License
 
-1. 먼저 `./install.sh claude` 또는 `./install.sh codex`로 사용 환경을 준비합니다.
-2. 설치 후에는 `.claude`를 수정하기보다 `/crucible-*` 워크플로우로 프로젝트 코드를 작업합니다.
-3. `.claude` 수정은 프레임워크 자체를 바꾸려는 경우에만 진행합니다.
-4. 브라우저 QA가 필요한 프로젝트에서만 `--with-browser`를 사용합니다.
-
-## 라이선스 / 배포 메모
-
-이 저장소는 현재 alpha 문서 기준선입니다. 외부에 공개할 때는 루트 GitHub 설명에 아래 성격을 함께 적는 것을 권장합니다.
-
-- `documentation-first`
-- `alpha`
-- `Claude-first canonical docs`
-- `Codex repo-local artifact generation`
-
-라이선스는 [MIT](/Users/soobeen/Desktop/Project/worktree/LICENSE) 기준으로 두었습니다.
+[MIT](/Users/soobeen/Desktop/Project/worktree/LICENSE)
