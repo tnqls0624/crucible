@@ -1,8 +1,8 @@
 # Claude-First Pack Compiler
 
-`Claude Code`용 `.claude` 문서를 canonical source of truth로 두고, 필요할 때 `Codex`용 `.agents` 산출물을 repo-local로 생성하는 documentation-first 프레임워크입니다.
+`Claude Code`용 `.claude` 문서를 canonical source of truth로 두고, 필요할 때 `Codex`용 `.agents` 산출물을 repo-local로 생성해 프로젝트 코드 작업에 바로 사용할 수 있게 하는 agentic workflow 프레임워크입니다.
 
-현재 저장소는 구현 코드보다 문서 계약과 설치 흐름을 먼저 잠그는 `alpha` 단계입니다. 즉, "완성된 semantic parity compiler"가 아니라, 다른 개발자가 clone 후 바로 문서 구조를 이해하고 설치 실험까지 할 수 있는 공개 기준선을 제공합니다.
+현재 저장소는 구현 코드보다 워크플로우 계약과 설치 흐름을 먼저 잠그는 `alpha` 단계입니다. 즉, "완성된 semantic parity compiler"라기보다, 다른 개발자가 clone 후 바로 설치하고 자신의 프로젝트 코드 작업에 적용할 수 있는 공개 기준선을 제공합니다.
 
 ## 현재 상태
 
@@ -27,7 +27,7 @@ cd crucible
 ./install.sh claude
 ```
 
-이 명령은 hook 스크립트 실행 권한을 정리하고, 현재 저장소가 `.claude` 기준선으로 사용 가능하도록 준비합니다.
+이 명령은 hook 스크립트 실행 권한을 정리하고, 현재 저장소에서 `Claude Code` 기반 agentic workflow를 사용할 준비를 합니다.
 
 ### 3. Codex용 설치
 
@@ -43,7 +43,7 @@ cd crucible
 - `.agents/skills/*/SKILL.md`
 - `.agents/skills/*/references/*.md`
 
-`.agents/`는 generated artifact이므로 직접 수정하지 않고, 항상 `.claude`를 수정한 뒤 다시 설치합니다.
+`.agents/`는 generated artifact이므로 직접 수정하지 않고, 필요할 때 다시 생성해서 사용합니다.
 
 ### 4. 브라우저 QA 도구까지 함께 설치
 
@@ -100,6 +100,44 @@ cd crucible
 - `.claude/protocols/codex-target-semantics.md`: Codex 산출물 의미
 - `.claude/protocols/cross-model-compat.md`: 런타임 호환 정책
 
+## 일반 사용자 사용 흐름
+
+대부분의 사용자는 `.claude` 문서를 직접 수정하지 않습니다. 설치 후 이 프레임워크를 이용해 **자기 프로젝트 코드 작업**을 진행하면 됩니다.
+
+기본 흐름:
+
+1. `./install.sh claude` 또는 `./install.sh codex`를 실행합니다.
+2. Claude Code 또는 Codex에서 프로젝트 루트를 엽니다.
+3. `/crucible-status`로 현재 상태를 확인합니다.
+4. 새 기능은 `/crucible-spec` → `/crucible-plan` → `/crucible-build` 순서로 진행합니다.
+5. 구현 후 `/crucible-gate`로 검증하고 필요하면 `/crucible-ship`으로 마무리합니다.
+
+예시:
+
+```text
+/crucible-spec
+  "JWT 로그인 기능을 추가하고 싶어"
+
+/crucible-plan
+  "방금 만든 스펙 기준으로 설계와 태스크를 나눠줘"
+
+/crucible-build
+  "플랜대로 구현해줘"
+
+/crucible-gate
+  "테스트와 품질 게이트를 실행해줘"
+```
+
+## `.claude`를 직접 수정하는 경우
+
+`.claude` 문서를 직접 수정하는 건 아래 같은 경우에 가깝습니다.
+
+- 프레임워크 자체를 개선할 때
+- agent / skill / gate 규칙을 바꿀 때
+- 조직 공통 워크플로우를 커스터마이징할 때
+
+즉, **일반 사용자 작업 대상은 보통 프로젝트 코드**이고, `.claude`는 그 작업을 안내하는 프레임워크 레이어입니다.
+
 ## 공개 저장소 원칙
 
 - `.claude`가 source of truth입니다.
@@ -116,10 +154,10 @@ cd crucible
 
 ## 권장 사용 방식
 
-1. `.claude` 문서를 먼저 읽고 현재 규칙을 이해합니다.
-2. `Claude Code`로 문서를 다듬거나, `./install.sh codex`로 `.agents`를 생성합니다.
-3. generated 산출물이 아니라 `.claude` 문서를 수정합니다.
-4. 브라우저 QA가 필요할 때만 `--with-browser`를 사용합니다.
+1. 먼저 `./install.sh claude` 또는 `./install.sh codex`로 사용 환경을 준비합니다.
+2. 설치 후에는 `.claude`를 수정하기보다 `/crucible-*` 워크플로우로 프로젝트 코드를 작업합니다.
+3. `.claude` 수정은 프레임워크 자체를 바꾸려는 경우에만 진행합니다.
+4. 브라우저 QA가 필요한 프로젝트에서만 `--with-browser`를 사용합니다.
 
 ## 라이선스 / 배포 메모
 

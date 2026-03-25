@@ -176,8 +176,8 @@ print_next_steps() {
 
 다음 단계:
   1. Claude Code에서 이 저장소를 엽니다.
-  2. `.claude/CLAUDE.md`와 `.claude/memory/specs/`를 먼저 확인합니다.
-  3. 문서 수정은 항상 `.claude`에서 진행합니다.
+  2. `/crucible-status` 또는 `/crucible-spec`부터 시작해 프로젝트 코드를 작업합니다.
+  3. `.claude` 수정은 프레임워크 규칙 자체를 바꿀 때만 진행합니다.
 EOF
       ;;
     codex)
@@ -185,8 +185,8 @@ EOF
 
 다음 단계:
   1. Codex는 repo root의 `AGENTS.md`와 generated `.agents/`를 함께 읽습니다.
-  2. `.agents/`를 직접 수정하지 말고, `.claude/`를 수정한 뒤 `./install.sh codex`를 다시 실행합니다.
-  3. 기존 사용자 파일과 충돌하는 경우 `--force` 대신 `.claude` source를 먼저 점검합니다.
+  2. 설치 후에는 `.agents/`를 직접 수정하지 말고 프로젝트 코드 작업에 바로 사용합니다.
+  3. 프레임워크 규칙을 바꾸고 싶을 때만 `.claude/`를 수정한 뒤 `./install.sh codex`를 다시 실행합니다.
 EOF
       ;;
   esac
