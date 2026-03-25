@@ -1,0 +1,23 @@
+{
+  "skill_name": "crucible-gate",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "pack compiler 구현 다 했어. TypeScript 프로젝트고 tsc, eslint, vitest를 쓰고 있어. 품질 게이트 돌려줘.",
+      "expected_output": "Gate A(타입체크+린트+포맷) → Gate B(테스트+커버리지+스펙준수) 순서로 실행. 구조화된 PASS/FAIL 보고서 생성. 실패 시 PDCA 재시도 시도.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "lint랑 type check만 먼저 보고 싶어. eslint랑 tsc 결과를 확인해줘.",
+      "expected_output": "Gate A만 실행하여 린트/타입 체크 결과를 보여줌. 에러 발견 시 자동 수정(eslint --fix) 가능 여부를 먼저 검토.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "배포 전에 gate 전체를 확인하고 싶어. 테스트, 커버리지, 스펙 준수까지 전부 봐줘.",
+      "expected_output": "Gate A + Gate B 전체 실행. 테스트 결과, 커버리지, 스펙 준수 여부를 포함한 종합 보고서.",
+      "files": []
+    }
+  ]
+}

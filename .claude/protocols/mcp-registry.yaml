@@ -1,0 +1,62 @@
+# Crucible MCP Server Registry
+# 에이전트별 MCP 서버 접근 권한을 정의합니다.
+# 이 파일은 참조용이며, 실제 MCP 서버 설정은 Claude Code settings에서 관리합니다.
+# 현재 프로젝트는 documentation-first 상태이므로, 아래 MCP 서버는 "즉시 사용 중"이 아니라
+# 구현 또는 QA 단계에 들어갈 때 활성화할 후보 목록으로 읽습니다.
+
+servers:
+  # --- Development Tools ---
+
+  - name: context7
+    purpose: 최신 라이브러리 문서 및 API 레퍼런스 조회
+    used-by:
+      - architect  # 기술 스택 선정 시 최신 문서 참조
+      - engineer   # 구현 시 API 레퍼런스 확인
+    when: plan, build
+
+  - name: playwright
+    purpose: 브라우저 기반 E2E 테스트 자동화
+    used-by:
+      - qa         # E2E 테스트 작성 및 실행
+    when: build, gate
+
+  - name: claude-preview
+    purpose: 네이티브 브라우저 프리뷰 (스크린샷, 클릭, 폼 입력)
+    used-by:
+      - qa         # UI 테스트, 시각적 확인
+    when: build, gate
+
+  - name: github
+    purpose: PR/이슈 관리, 코드 리뷰, 릴리스
+    used-by:
+      - cto        # 이슈 트래킹, PR 관리
+      - reviewer   # PR 리뷰 코멘트
+      - devops     # 릴리스 생성, CI/CD 관리
+    when: build, ship
+
+  # --- Data & Infrastructure ---
+
+  # 프로젝트별로 추가하세요:
+  # - name: database-mcp
+  #   purpose: 데이터베이스 스키마 조회 및 마이그레이션
+  #   used-by: [architect, engineer]
+  #   when: plan, build
+
+  # - name: cloud-deploy
+  #   purpose: 클라우드 배포 관리 (AWS/GCP/Azure)
+  #   used-by: [devops]
+  #   when: ship
+  #   security: read-only by default, write requires user confirmation
+
+  # --- Monitoring & Observability ---
+
+  # - name: grafana
+  #   purpose: 메트릭 대시보드 조회
+  #   used-by: [devops, cto]
+  #   when: ship, any
+
+# MCP Firewall Rules:
+# 1. 에이전트는 자신의 used-by에 명시된 서버만 사용 가능
+# 2. write 작업은 항상 사용자 확인 필요
+# 3. 프로덕션 환경 접근은 devops 에이전트만 허용
+# 4. 쉘 명령 대신 MCP 서버를 통한 접근 강제 (보안)

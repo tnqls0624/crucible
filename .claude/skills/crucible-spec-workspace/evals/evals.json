@@ -1,0 +1,23 @@
+{
+  "skill_name": "crucible-spec",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Claude-first canonical pack을 정의하고 Codex용 repo-local artifact로 이어지는 v0 스펙을 쓰고 싶어.",
+      "expected_output": "F001 ID가 할당된 pack-compiler-v0.spec.md 파일이 .claude/memory/specs/에 생성됨. Problem Statement, User Journey, Feature Requirements(F001.x), Technical Constraints, Data Model, Acceptance Criteria 섹션이 포함됨.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Constrained Claude Dialect와 Policy/Contract Block 규칙을 먼저 문서로 잠그는 기능 스펙을 써줘.",
+      "expected_output": "dialect-contract.spec.md 또는 유사한 스펙 문서가 생성됨. canonical 형식, policy block, supported semantic surface가 Feature ID 단위로 정리됨.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "10-session evidence gate를 운영하기 위한 기록 템플릿과 절차를 기능 스펙으로 정리해줘.",
+      "expected_output": "evidence-gate.spec.md 또는 유사한 스펙 문서가 생성됨. 세션 로그 항목, 재질의 횟수, 시간 손실, 계약 파손 기록 기준이 Acceptance Criteria에 포함됨.",
+      "files": []
+    }
+  ]
+}

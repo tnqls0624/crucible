@@ -1,0 +1,11 @@
+.DS_Store
+.codex/
+.agents/
+
+.claude/settings.local.json
+.claude/memory/project-brief.md
+.claude/memory/session-log/*.md
+!.claude/memory/session-log/README.md
+
+.claude/tools/browser/node_modules/
+.claude/tools/browser/bin/

@@ -1,0 +1,14 @@
+{
+  "name": "crucible-browser",
+  "version": "0.1.0",
+  "description": "Persistent headless Chromium daemon for Crucible QA",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/cli.ts",
+    "build": "bun build src/cli.ts --compile --outfile bin/crucible-browse",
+    "server:dev": "bun run src/server.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0"
+  }
+}

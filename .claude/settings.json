@@ -1,0 +1,56 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/check-phase-permission.sh\" \"$TOOL_INPUT\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-lint.sh\" \"$TOOL_INPUT\"",
+            "timeout": 30000
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-compact.sh\"",
+            "timeout": 120000
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'source \"$CLAUDE_PROJECT_DIR/.claude/tools/telemetry/tracker.sh\" && crucible_track_end \"$TOOL_USE_NAME\" \"completed\"'",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "CRUCIBLE_PHASE": "plan",
+    "CRUCIBLE_PROJECT_NAME": "Claude-First Pack Compiler",
+    "CRUCIBLE_PROJECT_TYPE": "ai-agent",
+    "CRUCIBLE_STACK": "Markdown-first canonical spec, Bash hooks/setup, GitHub release distribution (planned)"
+  }
+}

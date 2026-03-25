@@ -1,0 +1,161 @@
+# Crucible Tool Access Policies
+# 에이전트별 도구 사용 권한을 정의합니다.
+# 이 정책은 각 에이전트의 시스템 프롬프트에 삽입되며,
+# check-phase-permission.sh 훅으로 프로그래밍적 강제가 가능합니다.
+
+agents:
+  cto:
+    description: 오케스트레이터 — 읽기 전용, 에이전트 호출만 허용
+    allowed:
+      - Read
+      - Glob
+      - Grep
+      - Agent        # 다른 에이전트 호출
+      - TodoWrite    # 태스크 관리
+    denied:
+      - Write        # 코드 작성 불가
+      - Edit         # 코드 수정 불가
+      - Bash         # 직접 쉘 실행 불가
+    file_restrictions: null
+
+  architect:
+    description: 설계 전문가 — 문서 작성만 허용
+    allowed:
+      - Read
+      - Glob
+      - Grep
+      - Write        # ADR/문서만
+      - Edit         # ADR/문서만
+      - Bash         # 읽기 전용 (git log, tree 등)
+    denied: []
+    file_restrictions:
+      write_allowed:
+        - ".claude/CLAUDE.md"
+        - ".claude/gates/*.md"
+        - ".claude/memory/decisions/*.md"
+        - ".claude/memory/*.md"
+        - ".claude/memory/templates/*.md"
+        - ".claude/protocols/*.md"
+        - ".claude/protocols/*.yaml"
+        - "AGENTS.md"
+      write_denied:
+        - "src/**"
+        - "lib/**"
+        - "app/**"
+
+  engineer:
+    description: 구현 전문가 — 소스 + 테스트 전체 접근
+    allowed:
+      - Read
+      - Write
+      - Edit
+      - Bash         # 빌드, 린트, 테스트
+      - Glob
+      - Grep
+    denied: []
+    file_restrictions:
+      write_denied:
+        - ".claude/gates/*"
+        - ".claude/protocols/*"
+        - ".claude/hooks/*"
+        - ".claude/memory/specs/*"
+        - ".claude/agents/*"
+        - ".claude/skills/*"
+        - "AGENTS.md"
+
+  security-auditor:
+    description: 보안 감사 전문가 — 읽기 전용, 감사 도구 실행만 허용
+    allowed:
+      - Read
+      - Glob
+      - Grep
+      - Bash         # pip audit, npm audit, git log 등 읽기 전용
+    denied:
+      - Write
+      - Edit
+    file_restrictions: null
+
+  reviewer:
+    description: 리뷰 전문가 — 완전 읽기 전용
+    allowed:
+      - Read
+      - Glob
+      - Grep
+      - Bash         # git diff, git log 등 읽기 전용
+    denied:
+      - Write
+      - Edit
+    file_restrictions: null
+
+  qa:
+    description: QA 전문가 — 테스트 디렉토리만 쓰기 허용
+    allowed:
+      - Read
+      - Glob
+      - Grep
+      - Write        # 테스트만
+      - Edit         # 테스트만
+      - Bash         # 테스트 실행
+    denied: []
+    file_restrictions:
+      write_allowed:
+        - "tests/**"
+        - "test/**"
+        - "__tests__/**"
+        - "*.test.*"
+        - "*.spec.*"
+      write_denied:
+        - "src/**"
+        - "lib/**"
+        - "app/**"
+
+  devops:
+    description: 인프라 전문가 — 인프라/CI 파일만 쓰기 허용
+    allowed:
+      - Read
+      - Glob
+      - Grep
+      - Write        # 인프라만
+      - Edit         # 인프라만
+      - Bash         # Docker, 배포 명령
+    denied: []
+    file_restrictions:
+      write_allowed:
+        - ".github/**"
+        - ".gitlab-ci.yml"
+        - "Dockerfile*"
+        - "docker-compose*.yml"
+        - ".env.example"
+        - "Makefile"
+      write_denied:
+        - "src/**"
+        - "tests/**"
+
+  tech-writer:
+    description: 문서 전문가 — 일반 문서와 `.claude` 기준선 문서만 쓰기 허용
+    allowed:
+      - Read
+      - Glob
+      - Grep
+      - Write        # 문서만
+      - Edit         # 문서만
+      - Bash         # git log, git diff (읽기 전용)
+    denied: []
+    file_restrictions:
+      write_allowed:
+        - "docs/**"
+        - "README.md"
+        - "CHANGELOG.md"
+        - "LICENSE"
+        - ".claude/**/*.md"
+        - "*.md"
+      write_denied:
+        - "src/**"
+        - "tests/**"
+        - ".claude/hooks/*"
+        - ".claude/protocols/*.yaml"
+
+# Enforcement Strategy:
+# 1. Primary: 에이전트 시스템 프롬프트에 Permitted/Prohibited 명시
+# 2. Secondary: check-phase-permission.sh 훅으로 Phase 기반 강제
+# 3. Future: Claude Code 네이티브 per-agent tool restrictions (로드맵)
