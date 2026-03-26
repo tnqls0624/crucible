@@ -51,4 +51,4 @@ crucible/
 
 ## Internal Reference
 
-세부 framework 기준선은 [.claude/CLAUDE.md](/Users/soobeen/Desktop/Project/worktree/.claude/CLAUDE.md)에 있습니다.
+세부 framework 기준선은 [.claude/CLAUDE.md](./.claude/CLAUDE.md)에 있습니다.

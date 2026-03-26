@@ -72,7 +72,7 @@ reviewer 에이전트가 기존에 OWASP 체크리스트를 포함했지만, 보
 
 ### A10: SSRF
 - [ ] 외부 URL 요청 시 화이트리스트
-- [ ] 내부 IP 접근 차단 (127.0.0.1, 169.254.x.x)
+- [ ] 내부 loopback / link-local 주소 접근 차단
 
 ## STRIDE Threat Model
 

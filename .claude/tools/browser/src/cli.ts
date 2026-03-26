@@ -171,7 +171,7 @@ DAEMON:
   shutdown                      Stop daemon
 
 EXAMPLES:
-  crucible-browse goto --url http://localhost:3000
+  crucible-browse goto --url <app-base-url>
   crucible-browse snapshot
   crucible-browse click @e3
   crucible-browse fill @e5 --value "user@test.com"

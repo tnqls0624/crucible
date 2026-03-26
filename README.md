@@ -16,6 +16,10 @@ from idea to implementation, validation, and release with less drift and less re
 
 ## Quick Start
 
+Prerequisite: `bun`이 설치되어 있어야 합니다. Crucible의 repo-local validator/registry 도구와 optional browser tool이 모두 Bun을 사용합니다.
+
+별도 로컬 설정이 없어도 `./setup` 후 바로 사용할 수 있습니다. worktree preview URL은 기본적으로 로컬 loopback 주소로 자동 계산되고, 필요할 때만 `CRUCIBLE_WORKTREE_PREVIEW_HOST`를 env로 override 하면 됩니다.
+
 1. 저장소를 clone 합니다.
 2. host에 맞게 setup을 실행합니다.
 3. `/crucible-status`로 현재 상태를 보고, 새 작업이면 `/crucible-spec`부터 시작합니다.
@@ -51,6 +55,17 @@ cd crucible
 
 - `.claude` source를 바탕으로 repo-local `.agents/` 산출물을 생성합니다.
 - Codex는 root `AGENTS.md`와 generated `.agents/`를 함께 읽습니다.
+- `.claude/agent-manifest.yaml`이 있으면 setup이 먼저 validator를 실행해 fail-closed로 검증합니다.
+- repo-local validator/registry 도구는 `bun`으로 실행됩니다.
+
+### Setup Guarantees
+
+setup 이후 기본적으로 보장되는 사항은 아래와 같습니다.
+
+- `python` 없이 `bun`만으로 validator, runtime registry, report schema 도구를 실행할 수 있습니다.
+- tracked 문서와 설정에는 사용자 개인 절대 경로나 특정 로컬 주소를 박아두지 않습니다.
+- worktree preview URL은 별도 설정이 없으면 로컬 loopback 주소로 자동 계산됩니다.
+- 필요하면 `CRUCIBLE_WORKTREE_PREVIEW_HOST`만 env로 override 해서 원격 preview 환경에 맞출 수 있습니다.
 
 ### Browser QA Tool
 
@@ -135,6 +150,7 @@ cd crucible
 - `.agents/`는 `./setup --host codex` 실행 시 생성되는 generated artifact 입니다.
 - 일반 사용자는 `.agents/`를 직접 수정하지 않습니다.
 - framework maintainer가 아닌 경우 `.claude`를 수정할 일은 거의 없습니다.
+- live runtime state와 task report는 `.claude/runtime/` 아래에서 로컬로 관리되며 커밋하지 않습니다.
 
 ## Maintainer Mode vs User Mode
 
@@ -159,6 +175,7 @@ Crucible 자체를 개선하는 모드입니다.
 - public alpha
 - fresh clone 기본 phase: `spec`
 - `Claude Code`와 `Codex` repo-local 사용 흐름 지원
+- `Adaptive Harness` 기반 Task Contract / evaluator / runtime registry 흐름 포함
 - browser QA는 optional
 - `Gemini`와 full semantic compiler는 아직 범위 밖
 
@@ -193,13 +210,15 @@ fresh clone 후 첫 real project spec과 ADR은 사용자의 프로젝트 문맥
 
 ## Docs
 
-- [AGENTS.md](/Users/soobeen/Desktop/Project/worktree/AGENTS.md): Codex/agent용 운영 문서
-- [CLAUDE.md](/Users/soobeen/Desktop/Project/worktree/CLAUDE.md): Claude Code용 운영 문서
-- [.claude/CLAUDE.md](/Users/soobeen/Desktop/Project/worktree/.claude/CLAUDE.md): framework 내부 기준선
-- [.claude/memory/README.md](/Users/soobeen/Desktop/Project/worktree/.claude/memory/README.md): memory 디렉토리 운영 규칙
-- [.claude/protocols/constrained-claude-dialect.md](/Users/soobeen/Desktop/Project/worktree/.claude/protocols/constrained-claude-dialect.md): canonical 문법
-- [.claude/protocols/codex-target-semantics.md](/Users/soobeen/Desktop/Project/worktree/.claude/protocols/codex-target-semantics.md): Codex 산출물 규칙
+- [AGENTS.md](./AGENTS.md): Codex/agent용 운영 문서
+- [CLAUDE.md](./CLAUDE.md): Claude Code용 운영 문서
+- [.claude/CLAUDE.md](./.claude/CLAUDE.md): framework 내부 기준선
+- [.claude/memory/README.md](./.claude/memory/README.md): memory 디렉토리 운영 규칙
+- [.claude/runtime/README.md](./.claude/runtime/README.md): live runtime state 정책
+- [.claude/protocols/constrained-claude-dialect.md](./.claude/protocols/constrained-claude-dialect.md): canonical 문법
+- [.claude/protocols/codex-target-semantics.md](./.claude/protocols/codex-target-semantics.md): Codex 산출물 규칙
+- [.claude/protocols/agent-manifest.md](./.claude/protocols/agent-manifest.md): optional manifest protocol
 
 ## License
 
-[MIT](/Users/soobeen/Desktop/Project/worktree/LICENSE)
+[MIT](./LICENSE)

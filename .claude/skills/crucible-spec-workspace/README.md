@@ -5,7 +5,7 @@
 ## 포함 범위
 
 - `evals/evals.json`: 스킬 평가용 입력 시나리오
-- `grade_spec.py`: 평가 결과 채점 스크립트
+- `grade_spec.ts`: 평가 결과 채점 스크립트
 
 ## 제외 범위
 

@@ -32,6 +32,11 @@ if [ -z "$CURRENT_PHASE" ]; then
     exit 0
 fi
 
+# session-log와 runtime state는 evidence / live registry 기록용이므로 모든 phase에서 허용
+if [[ "$FILE_PATH" == *".claude/memory/session-log/"* ]] || [[ "$FILE_PATH" == *".claude/runtime/"* ]]; then
+    exit 0
+fi
+
 # spec/plan 단계에서는 `.claude`가 source of truth이므로 내부 문서/설정 수정 허용
 if [[ "$FILE_PATH" == *".claude/"* ]]; then
     case "$CURRENT_PHASE" in

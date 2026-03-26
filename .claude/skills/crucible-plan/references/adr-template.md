@@ -46,22 +46,46 @@
 
 {이 ADR을 기반으로 분해된 구현 태스크 목록}
 
+각 태스크는 build 단계에서 그대로 handoff 가능한 `Task Contract` 여야 합니다.
+
 ### Task 1: {태스크 이름}
 
+- **Task ID**: ADR{nnn}-T1
 - **Description**: {구현할 내용}
 - **Files**: {생성/수정할 파일 경로}
+- **Verification**:
+  - {정적 검증 또는 런타임 검증 1}
+  - {정적 검증 또는 런타임 검증 2}
+- **Non-goals**:
+  - {이번 태스크에서 하지 않을 것 1}
+  - {이번 태스크에서 하지 않을 것 2}
+- **Risk Level**: trivial | standard | high-risk
 - **Dependencies**: 없음
 - **Acceptance Criteria**:
   - [ ] {기준 1}
   - [ ] {기준 2}
+- **Done Definition**:
+  - [ ] {handoff 완료 기준 1}
+  - [ ] {handoff 완료 기준 2}
 - **Estimated Complexity**: small | medium | large
 
 ### Task 2: {태스크 이름}
 
+- **Task ID**: ADR{nnn}-T2
 - **Description**: {구현할 내용}
 - **Files**: {파일 경로}
+- **Verification**:
+  - {정적 검증 또는 런타임 검증 1}
+  - {정적 검증 또는 런타임 검증 2}
+- **Non-goals**:
+  - {이번 태스크에서 하지 않을 것 1}
+  - {이번 태스크에서 하지 않을 것 2}
+- **Risk Level**: trivial | standard | high-risk
 - **Dependencies**: Task 1
 - **Acceptance Criteria**:
   - [ ] {기준 1}
   - [ ] {기준 2}
+- **Done Definition**:
+  - [ ] {handoff 완료 기준 1}
+  - [ ] {handoff 완료 기준 2}
 - **Estimated Complexity**: small | medium | large

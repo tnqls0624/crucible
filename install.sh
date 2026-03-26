@@ -72,6 +72,25 @@ make_hooks_executable() {
   fi
 }
 
+require_bun_runtime() {
+  command -v bun >/dev/null 2>&1 || fail "Crucible setup에는 bun이 필요합니다."
+}
+
+validate_optional_manifest() {
+  local manifest_path="$ROOT_DIR/.claude/agent-manifest.yaml"
+  local validator_path="$ROOT_DIR/.claude/tools/protocols/manifest_validator.ts"
+
+  if [[ ! -f "$manifest_path" ]]; then
+    return 0
+  fi
+
+  [[ -f "$validator_path" ]] || fail "manifest validator를 찾을 수 없습니다: $validator_path"
+  command -v bun >/dev/null 2>&1 || fail "optional manifest 검증에는 bun이 필요합니다."
+
+  log "optional agent manifest를 검증합니다."
+  run_in_root bun ".claude/tools/protocols/manifest_validator.ts" --manifest ".claude/agent-manifest.yaml"
+}
+
 write_generated_markdown() {
   local source_file="$1"
   local target_file="$2"
@@ -228,7 +247,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 ensure_target
+require_bun_runtime
 make_hooks_executable
+validate_optional_manifest
 
 case "$TARGET" in
   claude)

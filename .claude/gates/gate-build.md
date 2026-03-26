@@ -20,10 +20,11 @@ Gate A가 실패하면 Gate B는 실행하지 않습니다.
 | B1 | Unit Tests | `pytest` / `vitest` / `go test ./...` | All pass |
 | B2 | Test Coverage | coverage report | >= 프로젝트 threshold |
 | B3 | Spec Compliance | 구현 코드 vs spec 비교 | 모든 Feature ID 구현 |
-| B4 | No TODO/FIXME | Grep: `TODO\|FIXME` in 신규/변경 파일 | 0 매치 |
-| B5 | Security Audit | security-auditor 에이전트 | CRITICAL 0건 |
-| B6 | Browser QA | crucible-qa (web-app 타입만) | 핵심 시나리오 PASS |
-| B7 | Performance | 벤치마크 baseline 대비 비교 | regression 없음 |
+| B4 | Contract Compliance | `report_registry.ts validate` + ADR Task Contract 대조 | reviewer report는 필수, evaluator/qa report는 해당 시 필수, 동일한 `Task ID` 기준으로 `Files`, `Verification`, `Non-goals`, `Done Definition` 충족 |
+| B5 | No TODO/FIXME | Grep: `TODO\|FIXME` in 신규/변경 파일 | 0 매치 |
+| B6 | Security Audit | security-auditor 에이전트 | CRITICAL 0건 |
+| B7 | Browser QA | `crucible-qa` + `report_registry.ts validate --kind qa` (web-app 타입만) | 핵심 시나리오 + Contract Coverage PASS |
+| B8 | Performance | 벤치마크 baseline 대비 비교 | regression 없음 |
 
 ## PDCA Retry Loop
 
@@ -50,12 +51,14 @@ Gate A가 실패하면 Gate B는 실행하지 않습니다.
 - A2 린트 경고 → 자동 수정 시도 (`ruff check --fix` / `eslint --fix`)
 - B1 테스트 실패 → 실패 테스트명과 로그를 engineer에게 전달
 - B3 스펙 미준수 → 미구현 Feature ID 목록 제시
-- B5 보안 취약점 → CRITICAL 이슈를 engineer에게 전달, OWASP 참조 포함
-- B6 QA 실패 → 실패 시나리오 스크린샷과 기대/실제 결과를 engineer에게 전달
-- B7 성능 퇴행 → baseline 대비 느려진 항목과 측정값을 engineer에게 전달
+- B4 계약 미준수 → canonical report 누락, schema invalid, `Task ID` 불일치, `Verification`/`Non-goals`/`Done Definition` 실패 항목 제시
+- B6 보안 취약점 → CRITICAL 이슈를 engineer에게 전달, OWASP 참조 포함
+- B7 QA 실패 → 실패 시나리오 스크린샷과 기대/실제 결과, Contract Reference를 engineer에게 전달
+- B8 성능 퇴행 → baseline 대비 느려진 항목과 측정값을 engineer에게 전달
 
 ## Pass Action
 
 - `.claude/CLAUDE.md`의 Phase를 `ship`으로 업데이트
 - `.claude/settings.json`의 `CRUCIBLE_PHASE`를 `ship`으로 업데이트
 - 게이트 통과 보고서 생성 (날짜, 결과 테이블)
+- telemetry snapshot을 참고해 non-blocking 운영 메모를 남김 (`source .claude/tools/telemetry/tracker.sh && crucible_telemetry_gate_hint`)

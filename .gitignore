@@ -6,6 +6,12 @@
 .claude/memory/project-brief.md
 .claude/memory/session-log/*.md
 !.claude/memory/session-log/README.md
+.claude/runtime/*.md
+!.claude/runtime/README.md
+.claude/runtime/reports/*.md
+!.claude/runtime/reports/README.md
 
 .claude/tools/browser/node_modules/
 .claude/tools/browser/bin/
+
+__pycache__/

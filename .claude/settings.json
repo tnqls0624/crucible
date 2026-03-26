@@ -2,6 +2,16 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'source \"$CLAUDE_PROJECT_DIR/.claude/tools/telemetry/tracker.sh\" && crucible_track_tool_start \"$TOOL_USE_NAME\"'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {
@@ -40,7 +50,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'source \"$CLAUDE_PROJECT_DIR/.claude/tools/telemetry/tracker.sh\" && crucible_track_end \"$TOOL_USE_NAME\" \"completed\"'",
+            "command": "bash -c 'source \"$CLAUDE_PROJECT_DIR/.claude/tools/telemetry/tracker.sh\" && crucible_track_tool_end \"$TOOL_USE_NAME\" \"${TOOL_RESULT_STATUS:-completed}\"'",
             "timeout": 5000
           }
         ]
@@ -51,6 +61,15 @@
     "CRUCIBLE_PHASE": "spec",
     "CRUCIBLE_PROJECT_NAME": "Crucible",
     "CRUCIBLE_PROJECT_TYPE": "ai-agent workflow framework",
-    "CRUCIBLE_STACK": "Markdown workflow docs, Bash hooks/setup, optional Bun browser tool"
+    "CRUCIBLE_STACK": "Markdown workflow docs, Bash hooks/setup, Bun runtime tooling, optional Bun browser tool",
+    "CRUCIBLE_WORKTREE_PORT_BASE": "4100",
+    "CRUCIBLE_WORKTREE_PORT_BLOCK_SIZE": "20",
+    "CRUCIBLE_WORKTREE_PREVIEW_HOST": "auto",
+    "CRUCIBLE_WORKTREE_RUNTIME_LOG": ".claude/runtime/worktree-runtime.md",
+    "CRUCIBLE_WORKTREE_CLEANUP_POLICY": "archive-evidence-then-remove",
+    "CRUCIBLE_TASK_REPORT_DIR": ".claude/runtime/reports",
+    "CRUCIBLE_TASK_REPORT_FORMAT": "toml-frontmatter-v1",
+    "CRUCIBLE_TELEMETRY_DIR": "~/.crucible/telemetry",
+    "CRUCIBLE_TELEMETRY_WINDOW_HOURS": "24"
   }
 }

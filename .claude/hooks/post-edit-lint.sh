@@ -44,6 +44,18 @@ if [[ "$FILE_PATH" == *".claude/protocols/"*.yaml ]] || [[ "$FILE_PATH" == *".cl
     exit 0
 fi
 
+if [[ "$FILE_PATH" == *".claude/agent-manifest.yaml" ]]; then
+    if ! command -v bun &>/dev/null; then
+        echo "FORGE GATE: bun is required to validate $FILE_PATH"
+        exit 1
+    fi
+    bun "$PROJECT_DIR/.claude/tools/protocols/manifest_validator.ts" --manifest "$FILE_PATH" >/dev/null 2>&1 || {
+        echo "FORGE GATE: agent manifest validation failed for $FILE_PATH"
+        exit 1
+    }
+    exit 0
+fi
+
 if [[ "$FILE_PATH" == *".claude/settings.json" ]]; then
     if command -v jq &>/dev/null; then
         jq empty "$FILE_PATH" >/dev/null 2>&1 || {

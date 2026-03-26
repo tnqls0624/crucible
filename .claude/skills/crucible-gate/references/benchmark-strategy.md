@@ -31,7 +31,8 @@ baseline이 존재하면:
 ```bash
 # 응답 시간 (p50, p95, p99)
 # 프로젝트에 벤치마크 스크립트가 있으면 사용, 없으면 기본 측정
-curl -w "@curl-format.txt" -s http://localhost:8000/health
+API_BASE_URL="<api-base-url>"
+curl -w "@curl-format.txt" -s "${API_BASE_URL}/health"
 
 # 스타트업 시간
 time python -c "from app.main import app"
@@ -40,7 +41,8 @@ time python -c "from app.main import app"
 #### web-app
 ```bash
 # Lighthouse Core Web Vitals (crucible-browse 사용)
-$B goto --url http://localhost:3000
+WEB_BASE_URL="<web-base-url>"
+$B goto --url "$WEB_BASE_URL"
 # LCP, FID, CLS 측정
 
 # 번들 사이즈

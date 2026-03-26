@@ -1,0 +1,49 @@
+version: 0.1
+name: crucible
+canonical_root: .claude
+metadata_only: true
+
+supports:
+  canonical_hosts:
+    - claude
+  generated_hosts:
+    - codex
+
+generated_targets:
+  - host: codex
+    path: .agents/
+    source: .claude/
+
+roles:
+  - id: architect
+    ref: .claude/agents/architect.md
+  - id: cto
+    ref: .claude/agents/cto.md
+  - id: engineer
+    ref: .claude/agents/engineer.md
+  - id: qa
+    ref: .claude/agents/qa.md
+  - id: reviewer
+    ref: .claude/agents/reviewer.md
+  - id: security-auditor
+    ref: .claude/agents/security-auditor.md
+  - id: devops
+    ref: .claude/agents/devops.md
+  - id: tech-writer
+    ref: .claude/agents/tech-writer.md
+
+duties:
+  maker: engineer
+  evaluator: qa
+  checker: reviewer
+  escalation: cto
+
+runtime_memory:
+  specs: .claude/memory/specs/
+  decisions: .claude/memory/decisions/
+  session_log: .claude/memory/session-log/
+  runtime_state: .claude/runtime/
+  reports: .claude/runtime/reports/
+
+generated_artifacts:
+  codex_agents: .agents/

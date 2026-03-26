@@ -23,14 +23,17 @@ description: |
 
 ### Step 1: 데이터 수집
 
-6가지 소스에서 정보를 수집합니다. 파일이 없거나 비어있으면 해당 섹션을 "없음"으로 표시합니다.
+9가지 소스에서 정보를 수집합니다. 파일이 없거나 비어있으면 해당 섹션을 "없음"으로 표시합니다.
 
 1. **Phase**: `.claude/settings.json` → `env.CRUCIBLE_PHASE`
 2. **Project Info**: `.claude/CLAUDE.md`
 3. **Active Specs**: `.claude/memory/specs/*.spec.md` (Glob)
 4. **Decisions**: `.claude/memory/decisions/*.md` (Glob)
 5. **Session Log**: `.claude/memory/session-log/` (최근 3개)
-6. **Git Status**: `git status --short` + `git log --oneline -5`
+6. **Runtime Worktrees**: `.claude/runtime/worktree-runtime.md` 또는 `bun .claude/tools/worktree/runtime_registry.ts list --active-only`
+7. **Task Reports**: `.claude/runtime/reports/*.md` (최근 5개)
+8. **Telemetry**: `bash -lc 'source .claude/tools/telemetry/tracker.sh && crucible_telemetry_snapshot_json'`
+9. **Git Status**: `git status --short` + `git log --oneline -5`
 
 ### Step 2: 대시보드 출력
 
@@ -67,6 +70,26 @@ description: |
 |------|---------|
 | 2026-03-26 | 최근 세션 요약 예시 |
 
+### Active Worktrees
+| Task ID | Port Range | Preview URL | Status |
+|---------|------------|-------------|--------|
+| ADR002-T2 | 4120-4139 | <preview-url> | READY_FOR_REVIEW |
+
+### Recent Reports
+| Task ID | Kind | Verdict |
+|---------|------|---------|
+| ADR002-T2 | reviewer | APPROVE |
+| ADR002-T2 | evaluator | PASS |
+
+### Telemetry
+| Metric | Value |
+|--------|-------|
+| Total Tool Events | 128 |
+| Last 24h | 42 |
+| Average Duration | 410ms |
+| Slowest Tool | Bash (1820ms avg) |
+| Recent Failures | 0 |
+
 ### Git Status
 (미커밋 변경사항 또는 "clean")
 
@@ -74,7 +97,7 @@ description: |
 (최근 5개 커밋 oneline)
 ```
 
-현재 Phase를 대문자로 강조하여 즉시 식별 가능하게 합니다. 세션 로그가 있으면 가장 최근 것의 요약을 포함하여 이전 작업 맥락을 빠르게 복구합니다.
+현재 Phase를 대문자로 강조하여 즉시 식별 가능하게 합니다. 세션 로그가 있으면 가장 최근 것의 요약을 포함하여 이전 작업 맥락을 빠르게 복구합니다. telemetry가 있으면 최근 24시간 실행량과 평균 지연 시간을 함께 보여 줘서 병목을 빠르게 찾습니다.
 
 ## Related Files
 
@@ -83,3 +106,6 @@ description: |
 - `.claude/memory/specs/` — 활성 스펙
 - `.claude/memory/decisions/` — ADR
 - `.claude/memory/session-log/` — 세션 로그
+- `.claude/runtime/` — live runtime state
+- `.claude/runtime/reports/` — canonical task reports
+- `.claude/tools/telemetry/tracker.sh` — telemetry snapshot / bottleneck 분석

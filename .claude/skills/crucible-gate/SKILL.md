@@ -1,7 +1,7 @@
 ---
 name: crucible-gate
 description: |
-  이중 품질 게이트를 실행합니다. Gate A(타입체크+린트+포맷)와 Gate B(테스트+커버리지+스펙준수)를 순차 실행하여 PASS/FAIL 보고서를 생성합니다. 실패 시 PDCA 루프로 자동 수정(최대 2회)을 시도합니다. Zero-tolerance 정책: 린트 경고 0개, 타입 에러 0개, 테스트 100% 통과.
+  이중 품질 게이트를 실행합니다. Gate A(타입체크+린트+포맷)와 Gate B(테스트+커버리지+스펙준수+Task Contract 준수)를 순차 실행하여 PASS/FAIL 보고서를 생성합니다. 실패 시 PDCA 루프로 자동 수정(최대 2회)을 시도합니다. Zero-tolerance 정책: 린트 경고 0개, 타입 에러 0개, 테스트 100% 통과.
 
   ALWAYS use this skill when:
   - 사용자가 `/crucible-gate` 명령을 사용할 때
@@ -53,7 +53,21 @@ Gate A 통과 후에만 실행:
 1. **Unit Tests**: 전체 테스트 스위트 실행, 100% 통과
 2. **Coverage**: 프로젝트 threshold 확인 (미설정 시 스킵)
 3. **Spec Compliance**: `.claude/memory/specs/`의 Feature ID별 수용 기준과 구현 대조
-4. **Clean Code**: 신규/변경 파일에서 `TODO`, `FIXME` 패턴 검색 → 0 매치
+4. **Task Contract Compliance**:
+   `bun .claude/tools/reports/report_registry.ts validate --task-id "$TASK_ID" --kind reviewer`로 reviewer report schema를 검증하고,
+   runtime evaluator가 실행된 경우 `--kind evaluator` 또는 web-app QA면 `--kind qa`를 추가 검증한 뒤 ADR과 대조
+5. **Clean Code**: 신규/변경 파일에서 `TODO`, `FIXME` 패턴 검색 → 0 매치
+
+runtime 검증이 필요한 태스크는 `.claude/runtime/reports/`의 canonical report를 함께 읽어 Gate B 판단에 사용합니다.
+
+Gate의 PASS/FAIL과 별도로 아래 telemetry snapshot을 읽어 운영 개선 포인트를 남깁니다.
+
+```bash
+source .claude/tools/telemetry/tracker.sh
+crucible_telemetry_gate_hint
+```
+
+telemetry는 non-blocking 관찰 신호입니다. 게이트를 실패시키지는 않지만, 느린 도구나 반복 실패가 보이면 다음 사이클의 harness 개선 과제로 남깁니다.
 
 ### Step 4: PDCA Retry Loop
 
@@ -103,7 +117,14 @@ Gate A 통과 후에만 실행:
 | Tests | PASS | 12/12 passed |
 | Coverage | PASS | 84% (threshold: 80%) |
 | Spec Compliance | PASS | F001.1-F001.5 checked |
+| Contract Compliance | PASS | Task 2 Verification / Non-goals checked |
 | Clean Code | PASS | 0 TODO/FIXME |
+
+### Telemetry Notes
+- Total Tool Events: 128
+- Average Duration: 410ms
+- Slowest Tool: Bash (1820ms avg)
+- Recent Failures: 0
 
 ### 다음 단계
 `/crucible-ship` 으로 릴리스를 진행하세요.

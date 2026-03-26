@@ -60,29 +60,48 @@ Constrained Claude Dialect를 단일 canonical source로 사용한다.
 
 각 태스크는 하나의 에이전트가 fresh context에서 독립적으로 완료할 수 있어야 합니다. 태스크가 너무 크면 컨텍스트 부패가 발생하고, 너무 작으면 오버헤드가 늘어납니다.
 
+이 단계의 출력은 단순 체크리스트가 아니라 build 단계로 바로 전달 가능한 `Task Contract` 다. 태스크 계약이 있어야 engineer가 범위를 넘지 않고, reviewer/evaluator가 무엇을 검증해야 하는지 명확해진다.
+
 **분해 기준:**
 - 관련 파일 3-7개 이내 (컨텍스트 윈도우의 ~50%)
 - 자체 수용 기준 보유 (독립 검증 가능)
 - 의존성 최소화 (가능하면 병렬 실행)
 - 하나의 plan에 2-5개 태스크가 적정
 
-**각 태스크에 포함할 내용:**
+**각 Task Contract에 포함할 내용:**
 ```markdown
 ### Task {n}: {태스크 이름}
+- **Task ID**: ADR{nnn}-T{n}
 - **Description**: {구현할 내용}
 - **Files**: {생성/수정할 파일 경로 목록}
+- **Verification**:
+  - {lint/type/test/preview/browser/API 검증 중 필요한 것}
+- **Non-goals**:
+  - {이번 태스크에서 명시적으로 하지 않을 것}
+- **Risk Level**: trivial | standard | high-risk
 - **Dependencies**: {선행 태스크 번호, 없으면 "없음"}
 - **Acceptance Criteria**:
   - [ ] {구체적이고 기계적으로 검증 가능한 기준}
+- **Done Definition**:
+  - [ ] {engineer handoff 완료 기준}
 - **Estimated Complexity**: small | medium | large
 ```
+
+**Risk Level 가이드:**
+- `trivial`: 문서 수정, 국소 리팩터링, 명확한 단일 파일 수정. 기본 경로는 `engineer → reviewer`.
+- `standard`: 일반 기능 구현, 테스트 추가, API 연결. 기본 경로는 `engineer → reviewer`, 필요 시 evaluator 추가.
+- `high-risk`: 아키텍처/API 계약 변경, 병렬 실행 충돌 가능성, UI 핵심 플로우, 데이터 무결성 영향. 기본 경로는 이후 build 단계에서 `engineer → evaluator → reviewer`.
+
+`Task ID`는 build, QA, gate에서 공통으로 쓰는 canonical identifier입니다. 형식은 `ADR{nnn}-T{n}`이며, `nnn`은 현재 ADR 번호를 뜻합니다. 같은 feature에 ADR이 여러 개 있어도 충돌하지 않도록, 같은 태스크를 가리키는 모든 report와 handoff는 동일한 ADR-scoped `Task ID`를 사용해야 합니다.
 
 ### Step 4: gate-plan 검증
 
 `.claude/gates/gate-plan.md`를 읽고 통과 조건을 확인합니다. 핵심:
 - ADR에 Context, Decision, Consequences 섹션 존재
-- 모든 태스크에 수용 기준과 관련 파일 명시
+- 모든 태스크에 Task Contract 필드(`Task ID`, `Files`, `Verification`, `Non-goals`, `Risk Level`, `Acceptance Criteria`, `Done Definition`) 존재
 - 스펙 파일 참조 존재
+
+Task Contract가 비어 있으면 architect가 다시 보완합니다. plan 단계에서 애매함을 남기면 build 단계에서 범위 드리프트와 재작업이 커집니다.
 
 ### Step 5: 사용자 리뷰
 
