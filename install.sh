@@ -10,6 +10,8 @@ DRY_RUN=0
 
 GENERATOR_MARKER="generated-by: crucible setup v0"
 GENERATOR_SENTINEL=".generated-by-crucible-setup"
+GLOBAL_CLAUDE_DIR="$HOME/.claude"
+BACKUP_TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 
 usage() {
   cat <<'EOF'
@@ -167,6 +169,85 @@ generate_codex_agents() {
   done < <(find "$source_skills_dir" -mindepth 1 -maxdepth 1 -type d ! -name '*-workspace' | sort)
 }
 
+backup_global_asset() {
+  local asset_path="$1"
+  local backup_dir="$GLOBAL_CLAUDE_DIR/backups/crucible-$BACKUP_TIMESTAMP"
+
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    printf '[dry-run] backup %s -> %s/\n' "$asset_path" "$backup_dir"
+    return 0
+  fi
+
+  mkdir -p "$backup_dir"
+  cp -r "$asset_path" "$backup_dir/"
+  log "  백업: $asset_path -> $backup_dir/"
+}
+
+install_or_skip() {
+  local src="$1"
+  local dst="$2"
+  local label="$3"
+
+  if [[ -e "$dst" ]]; then
+    if [[ "$FORCE" -eq 1 ]]; then
+      backup_global_asset "$dst"
+      run rm -rf "$dst"
+    else
+      log "  SKIP (이미 존재): $label — --force로 덮어쓸 수 있습니다."
+      return 0
+    fi
+  fi
+
+  if [[ -d "$src" ]]; then
+    run mkdir -p "$dst"
+    run cp -r "$src/." "$dst/"
+  else
+    run mkdir -p "$(dirname "$dst")"
+    run cp "$src" "$dst"
+  fi
+  log "  설치: $label"
+}
+
+install_global_claude() {
+  local source_skills_dir="$ROOT_DIR/.claude/skills"
+  local source_agents_dir="$ROOT_DIR/.claude/agents"
+  local source_hooks_dir="$ROOT_DIR/.claude/hooks"
+  local source_gates_dir="$ROOT_DIR/.claude/gates"
+
+  log "~/.claude에 crucible skills/agents를 전역 설치합니다."
+
+  # skills (workspace 제외)
+  while IFS= read -r skill_dir; do
+    local skill_name
+    skill_name="$(basename "$skill_dir")"
+    install_or_skip "$skill_dir" "$GLOBAL_CLAUDE_DIR/skills/$skill_name" "skills/$skill_name"
+  done < <(find "$source_skills_dir" -mindepth 1 -maxdepth 1 -type d ! -name '*-workspace' | sort)
+
+  # agents
+  run mkdir -p "$GLOBAL_CLAUDE_DIR/agents"
+  while IFS= read -r agent_file; do
+    local agent_name
+    agent_name="$(basename "$agent_file")"
+    install_or_skip "$agent_file" "$GLOBAL_CLAUDE_DIR/agents/$agent_name" "agents/$agent_name"
+  done < <(find "$source_agents_dir" -maxdepth 1 -type f -name '*.md' | sort)
+
+  # hooks 템플릿 (crucible-init이 프로젝트로 복사하는 소스)
+  run mkdir -p "$GLOBAL_CLAUDE_DIR/crucible-hooks"
+  while IFS= read -r hook_file; do
+    local hook_name
+    hook_name="$(basename "$hook_file")"
+    install_or_skip "$hook_file" "$GLOBAL_CLAUDE_DIR/crucible-hooks/$hook_name" "crucible-hooks/$hook_name"
+  done < <(find "$source_hooks_dir" -maxdepth 1 -type f -name '*.sh' | sort)
+
+  # gates 템플릿 (crucible-init이 프로젝트로 복사하는 소스)
+  run mkdir -p "$GLOBAL_CLAUDE_DIR/crucible-gates"
+  while IFS= read -r gate_file; do
+    local gate_name
+    gate_name="$(basename "$gate_file")"
+    install_or_skip "$gate_file" "$GLOBAL_CLAUDE_DIR/crucible-gates/$gate_name" "crucible-gates/$gate_name"
+  done < <(find "$source_gates_dir" -maxdepth 1 -type f -name '*.md' | sort)
+}
+
 install_browser_tool() {
   local browser_dir="$ROOT_DIR/.claude/tools/browser"
 
@@ -194,9 +275,9 @@ print_next_steps() {
       cat <<'EOF'
 
 다음 단계:
-  1. Claude Code에서 이 저장소를 엽니다.
-  2. `/crucible-status` 또는 `/crucible-spec`부터 시작해 프로젝트 코드를 작업합니다.
-  3. `.claude` 수정은 프레임워크 규칙 자체를 바꿀 때만 진행합니다.
+  1. 어떤 프로젝트에서든 Claude Code를 열고 /crucible-init 으로 시작하세요.
+  2. 프로젝트 로컬 .claude/ 구조(hooks, gates, settings.json)는 /crucible-init이 자동 생성합니다.
+  3. 이미 설치된 crucible을 업데이트하려면 --force를 추가해 재실행하세요.
 EOF
       ;;
     codex)
@@ -254,6 +335,7 @@ validate_optional_manifest
 case "$TARGET" in
   claude)
     log "Claude Code용 문서 기준선을 준비합니다."
+    install_global_claude
     ;;
   codex)
     generate_codex_agents
